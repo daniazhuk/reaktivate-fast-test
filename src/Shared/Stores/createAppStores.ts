@@ -1,4 +1,4 @@
-import BooksRepository from '@/Books/Books.repository';
+import { BooksRepository } from '@/Books/Books.repository';
 import type { HttpGateway } from '@/Shared/ApiGateway';
 
 export type AppStores = {

@@ -1,15 +1,15 @@
 import { observer } from 'mobx-react';
-import { Tabs } from '@/Shared/Components/Tabs';
+import { TabsView } from '@/Shared/Components/Tabs.view';
 import { useController } from '@/Shared/Lifecycle/useController';
 import { BookItemView } from './BookItem.view';
-import BooksListController from './BooksList.controller';
+import { BooksListController } from './BooksList.controller';
 
 export const BooksListView = observer(() => {
   const controller = useController(BooksListController.create);
 
   return (
     <section className="books-list">
-      <Tabs label={controller.tabsLabel} tabs={controller.tabs} />
+      <TabsView label={controller.tabsLabel} tabs={controller.tabs} />
       <p className="books-list__status" role="status" hidden={controller.isStatusHidden}>
         {controller.statusText}{' '}
         <button type="button" hidden={controller.isRetryHidden} onClick={controller.retry}>

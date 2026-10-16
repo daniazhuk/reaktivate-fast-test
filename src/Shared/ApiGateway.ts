@@ -17,7 +17,7 @@ export class HttpError extends Error {
 
 type FetchFn = typeof fetch;
 
-export default class ApiGateway implements HttpGateway {
+export class ApiGateway implements HttpGateway {
   private readonly baseUrl: string;
   private readonly fetchFn: FetchFn;
 

@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import { useController } from '@/Shared/Lifecycle/useController';
-import HeaderController from './Header.controller';
+import { HeaderController } from './Header.controller';
 
 export const HeaderView = observer(() => {
   const controller = useController(HeaderController.create);

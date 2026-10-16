@@ -1,6 +1,6 @@
 import { createTestStores, flushPromises, TEST_USER } from '@/Test/createTestStores';
-import BooksListController from '@/Books/BooksList/BooksList.controller';
-import HeaderController from './Header.controller';
+import { BooksListController } from '@/Books/BooksList/BooksList.controller';
+import { HeaderController } from './Header.controller';
 
 const setup = () => {
   const stores = createTestStores();

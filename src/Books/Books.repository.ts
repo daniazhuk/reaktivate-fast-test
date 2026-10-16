@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import type { HttpGateway } from '@/Shared/ApiGateway';
 import { AddBookResponseDtoSchema, BooksDtoSchema, type AddBookDto, type BookDto } from './Books.dto';
-import type { AddBookPm, BookPm, BooksScope, BooksScopePm } from './Books.types';
+import type { AddBookPm, BookPm, BooksScope, BooksScopePm } from './Books.pm';
 
 const createScopePm = (): BooksScopePm => ({
   books: [],
@@ -22,7 +22,7 @@ const toBookPm = (dto: BookDto, index: number): BookPm => ({
  * ("all" / "private") so that several features (list, header counter)
  * observe the same data.
  */
-export default class BooksRepository {
+export class BooksRepository {
   readonly scopes: Record<BooksScope, BooksScopePm> = {
     all: createScopePm(),
     private: createScopePm(),

@@ -1,7 +1,7 @@
 import { makeAutoObservable, reaction } from 'mobx';
-import type { BooksScope, BooksScopePm } from '@/Books/Books.types';
-import type BooksRepository from '@/Books/Books.repository';
-import type { TabVm } from '@/Shared/Components/Tabs';
+import type { BooksScope, BooksScopePm } from '@/Books/Books.pm';
+import type { BooksRepository } from '@/Books/Books.repository';
+import type { TabVm } from '@/Shared/Components/Tabs.view';
 import type { Controller } from '@/Shared/Lifecycle/Controller';
 import { DisposerBag } from '@/Shared/Lifecycle/DisposerBag';
 import type { AppStores } from '@/Shared/Stores/createAppStores';
@@ -23,7 +23,7 @@ const EMPTY_TEXTS: Record<BooksScope, string> = {
 
 const SCOPES = Object.keys(SCOPE_LABELS) as BooksScope[];
 
-export default class BooksListController implements Controller {
+export class BooksListController implements Controller {
   static create = ({ booksRepository }: AppStores) => new BooksListController(booksRepository);
 
   readonly tabsLabel = 'Books filter';

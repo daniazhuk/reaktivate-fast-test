@@ -1,5 +1,5 @@
 import { createTestStores, flushPromises } from '@/Test/createTestStores';
-import AddBookController from './AddBook.controller';
+import { AddBookController } from './AddBook.controller';
 
 const change = (value: string) => ({ target: { value } });
 const submitEvent = () => ({ preventDefault: vi.fn() });

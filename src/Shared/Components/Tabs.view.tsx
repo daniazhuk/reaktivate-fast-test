@@ -10,7 +10,7 @@ type Props = {
   tabs: TabVm[];
 };
 
-export const Tabs = ({ label, tabs }: Props) => (
+export const TabsView = ({ label, tabs }: Props) => (
   <div className="tabs" role="tablist" aria-label={label}>
     {tabs.map((tab) => (
       <button

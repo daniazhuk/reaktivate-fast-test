@@ -1,21 +1,21 @@
 import { observer } from 'mobx-react';
-import { TextField } from '@/Shared/Components/TextField';
+import { TextFieldView } from '@/Shared/Components/TextField.view';
 import { useController } from '@/Shared/Lifecycle/useController';
-import AddBookController from './AddBook.controller';
+import { AddBookController } from './AddBook.controller';
 
 export const AddBookView = observer(() => {
   const controller = useController(AddBookController.create);
 
   return (
     <form className="add-book" aria-label={controller.formLabel} onSubmit={controller.onSubmit}>
-      <TextField
+      <TextFieldView
         label={controller.nameLabel}
         name="name"
         value={controller.name}
         disabled={controller.isSubmitting}
         onChange={controller.onNameChange}
       />
-      <TextField
+      <TextFieldView
         label={controller.authorLabel}
         name="author"
         value={controller.author}

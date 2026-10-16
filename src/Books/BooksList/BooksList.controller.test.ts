@@ -1,6 +1,6 @@
 import { reaction } from 'mobx';
 import { createTestStores, flushPromises, TEST_USER } from '@/Test/createTestStores';
-import BooksListController from './BooksList.controller';
+import { BooksListController } from './BooksList.controller';
 
 const setup = () => {
   const stores = createTestStores();

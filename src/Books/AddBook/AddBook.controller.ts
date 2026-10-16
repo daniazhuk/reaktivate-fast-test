@@ -1,10 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import type BooksRepository from '@/Books/Books.repository';
+import type { BooksRepository } from '@/Books/Books.repository';
 import type { AppStores } from '@/Shared/Stores/createAppStores';
-import type { ChangeEventLike, SubmitEventLike } from '@/Shared/types';
+import type { ChangeEventLike, SubmitEventLike } from '@/Shared/Events.types';
 
 /** Has no subscriptions or resources to release, hence no mount/unmount. */
-export default class AddBookController {
+export class AddBookController {
   static create = ({ booksRepository }: AppStores) => new AddBookController(booksRepository);
 
   readonly formLabel = 'Add book';

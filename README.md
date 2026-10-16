@@ -78,13 +78,13 @@ src/
   Books/                       feature: books
     Books.repository.ts        shared books state (PM) per scope, API calls
     Books.dto.ts               zod schemas and DTO types of the API
-    Books.types.ts             PM types
+    Books.pm.ts                PM types
     BooksList/                 list + "All / Private" switch   (controller, view, item view)
     AddBook/                   add-book form                   (controller, view)
   Header/                      feature: sticky header with "Your books: N" (controller, view)
   Shared/                      reusable, feature-agnostic code
     ApiGateway.ts, config.ts
-    Components/                Tabs, TextField (props-only views)
+    Components/                TabsView, TextFieldView (props-only views)
     Lifecycle/                 useController, Controller, DisposerBag
     Stores/                    createAppStores (composition root), Stores.context
   Test/                        FakeBooksGateway (in-memory API), test helpers
@@ -92,23 +92,23 @@ src/
 
 ## Acceptance criteria → implementation → tests
 
-| Criterion (PDF)                                   | Where                                                                                       | Verified by                                                                                                    |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| 1. Zero logic in TSX, MVP / MVVM                  | `*.view.tsx` read ready-made VM values; logic in `*.controller.ts`                          | ESLint `no-restricted-syntax` / `no-restricted-imports` for `src/**/*.tsx` (`npm run lint`)                    |
-| 2. MobX for state, mobx-react for reactivity      | `makeAutoObservable` in controllers / repository, `observer` views                          | all controller tests; `App.test.tsx`                                                                           |
-| 3. Books creation                                 | `AddBook.controller.ts`, `BooksRepository.addBook`                                          | `AddBook.controller.test.ts`, "adds a book with POST…" in `Books.repository.test.ts`, `App.test.tsx`           |
-| 4. Logic covered by tests                         | `*.test.ts` next to each controller / repository                                            | 48 tests; coverage thresholds (100% lines for controllers) in `vite.config.ts`                                 |
-| Part 2a. Mutually exclusive All / Private switch  | `BooksList.controller.ts` (`scope`, `tabs`), `Shared/Components/Tabs.tsx`                   | "keeps tabs mutually exclusive", "switches to private books…" in `BooksList.controller.test.ts`                |
-| Part 2b. Sticky app-wide header "Your books: N"   | `Header/*`, `position: sticky` in `styles.css`; count from the shared `BooksRepository`     | `Header.controller.test.ts`, including "keeps the counter correct while the list shows all / private"          |
-| Appendix 1. Reusable vs feature components        | `Shared/Components` vs `Books/*`, `Header/*`                                                | structure                                                                                                      |
-| Appendix 2. A controller per component with logic | `BooksList`, `AddBook`, `Header` controllers; `Tabs`, `TextField`, `BookItem` have no logic | ESLint view rules                                                                                              |
-| Appendix 3. Global store only for shared data     | only `BooksRepository` (books shared by the list and the header); the nickname is config    | `Books.repository.test.ts`                                                                                     |
-| Appendix 4. View uses only MobX stores            | views call `useController` only; `useState` / `useEffect` are banned in views               | ESLint `no-restricted-imports`                                                                                 |
-| Appendix 5. Logic tests are a must                | see above                                                                                   | `npm run check` in CI                                                                                          |
-| Appendix 6. Views are functional                  | all views are function components                                                           | —                                                                                                              |
-| Appendix 7. Lifecycle and resource disposal       | `useController` → `mount` / `unmount`, `DisposerBag`                                        | "stops reacting to scope changes after unmount", "can be re-mounted (React StrictMode)", `DisposerBag.test.ts` |
-| Appendix 8. No unnecessary renders (runInAction)  | each async result applied in one `runInAction`; `enforceActions: 'always'`                  | "notifies observers once per state transition", "recomputes the books view model only when data changes"       |
-| Appendix 9. No `console.log`                      | `console.debug` for failures                                                                | ESLint `no-console` (only `debug` allowed)                                                                     |
+| Criterion (PDF)                                   | Where                                                                                                   | Verified by                                                                                                    |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 1. Zero logic in TSX, MVP / MVVM                  | `*.view.tsx` read ready-made VM values; logic in `*.controller.ts`                                      | ESLint `no-restricted-syntax` / `no-restricted-imports` for `src/**/*.tsx` (`npm run lint`)                    |
+| 2. MobX for state, mobx-react for reactivity      | `makeAutoObservable` in controllers / repository, `observer` views                                      | all controller tests; `App.test.tsx`                                                                           |
+| 3. Books creation                                 | `AddBook.controller.ts`, `BooksRepository.addBook`                                                      | `AddBook.controller.test.ts`, "adds a book with POST…" in `Books.repository.test.ts`, `App.test.tsx`           |
+| 4. Logic covered by tests                         | `*.test.ts` next to each controller / repository                                                        | 48 tests; coverage thresholds (100% lines for controllers) in `vite.config.ts`                                 |
+| Part 2a. Mutually exclusive All / Private switch  | `BooksList.controller.ts` (`scope`, `tabs`), `Shared/Components/Tabs.view.tsx`                          | "keeps tabs mutually exclusive", "switches to private books…" in `BooksList.controller.test.ts`                |
+| Part 2b. Sticky app-wide header "Your books: N"   | `Header/*`, `position: sticky` in `styles.css`; count from the shared `BooksRepository`                 | `Header.controller.test.ts`, including "keeps the counter correct while the list shows all / private"          |
+| Appendix 1. Reusable vs feature components        | `Shared/Components` vs `Books/*`, `Header/*`                                                            | structure                                                                                                      |
+| Appendix 2. A controller per component with logic | `BooksList`, `AddBook`, `Header` controllers; `TabsView`, `TextFieldView`, `BookItemView` have no logic | ESLint view rules                                                                                              |
+| Appendix 3. Global store only for shared data     | only `BooksRepository` (books shared by the list and the header); the nickname is config                | `Books.repository.test.ts`                                                                                     |
+| Appendix 4. View uses only MobX stores            | views call `useController` only; `useState` / `useEffect` are banned in views                           | ESLint `no-restricted-imports`                                                                                 |
+| Appendix 5. Logic tests are a must                | see above                                                                                               | `npm run check` in CI                                                                                          |
+| Appendix 6. Views are functional                  | all views are function components                                                                       | —                                                                                                              |
+| Appendix 7. Lifecycle and resource disposal       | `useController` → `mount` / `unmount`, `DisposerBag`                                                    | "stops reacting to scope changes after unmount", "can be re-mounted (React StrictMode)", `DisposerBag.test.ts` |
+| Appendix 8. No unnecessary renders (runInAction)  | each async result applied in one `runInAction`; `enforceActions: 'always'`                              | "notifies observers once per state transition", "recomputes the books view model only when data changes"       |
+| Appendix 9. No `console.log`                      | `console.debug` for failures                                                                            | ESLint `no-console` (only `debug` allowed)                                                                     |
 
 Beyond the PDF: race safety ("applies only the latest response…"), double-submit guard ("ignores repeated
 submits…"), creation errors keep the input ("shows an error and keeps the input…"), malformed API responses
