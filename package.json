@@ -14,7 +14,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -47,6 +47,6 @@
     "zod": "^4.6.7"
   },
   "engines": {
-    "node": ">=20.19"
+    "node": ">=24"
   }
 }
