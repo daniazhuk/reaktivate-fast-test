@@ -5,4 +5,56 @@
 
 body {
   font-family: arial;
+  margin: 0;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #222;
+  color: #fff;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.tabs__tab[aria-selected='true'] {
+  font-weight: bold;
+}
+
+.books-list__items {
+  list-style: none;
+  padding: 0;
+}
+
+.book {
+  padding: 4px 0;
+}
+
+.add-book {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.add-book__error {
+  flex-basis: 100%;
+  color: #c00;
 }
