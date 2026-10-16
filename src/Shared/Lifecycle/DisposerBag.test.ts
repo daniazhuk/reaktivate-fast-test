@@ -1,7 +1,7 @@
 import { DisposerBag } from './DisposerBag';
 
 describe('DisposerBag', () => {
-  it('calls every disposer once and empties itself', () => {
+  it('calls every disposer exactly once', () => {
     const bag = new DisposerBag();
     const a = vi.fn();
     const b = vi.fn();
@@ -13,6 +13,5 @@ describe('DisposerBag', () => {
 
     expect(a).toHaveBeenCalledTimes(1);
     expect(b).toHaveBeenCalledTimes(1);
-    expect(bag.size).toBe(0);
   });
 });

@@ -8,10 +8,6 @@ export class DisposerBag {
     this.disposers.push(disposer);
   }
 
-  get size(): number {
-    return this.disposers.length;
-  }
-
   dispose(): void {
     this.disposers.splice(0).forEach((dispose) => dispose());
   }

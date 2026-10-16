@@ -8,8 +8,8 @@ export const HeaderView = observer(() => {
   return (
     <header className="app-header">
       <span className="app-header__title">{controller.title}</span>
-      <span className="app-header__counter" data-testid="private-books-counter">
-        {controller.counterLabel}{' '}
+      <span className="app-header__counter">
+        <span role="status">{controller.counterLabel}</span>{' '}
         <button type="button" hidden={controller.isRetryHidden} onClick={controller.retry}>
           {controller.retryLabel}
         </button>

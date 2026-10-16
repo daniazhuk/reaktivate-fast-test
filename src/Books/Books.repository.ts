@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import type { HttpGateway } from '@/Shared/ApiGateway';
-import type UserStore from '@/Shared/Stores/User.store';
 import { AddBookResponseDtoSchema, BooksDtoSchema, type AddBookDto, type BookDto } from './Books.dto';
 import type { AddBookPm, BookPm, BooksScope, BooksScopePm } from './Books.types';
 
@@ -30,16 +29,16 @@ export default class BooksRepository {
   };
 
   private readonly httpGateway: HttpGateway;
-  private readonly userStore: UserStore;
+  private readonly userId: string;
   // Only the latest request per scope may write its result (last-request-wins).
   private readonly requestIds: Record<BooksScope, number> = { all: 0, private: 0 };
 
-  constructor(httpGateway: HttpGateway, userStore: UserStore) {
+  constructor(httpGateway: HttpGateway, userId: string) {
     this.httpGateway = httpGateway;
-    this.userStore = userStore;
-    makeAutoObservable<this, 'httpGateway' | 'userStore' | 'requestIds'>(
+    this.userId = userId;
+    makeAutoObservable<this, 'httpGateway' | 'userId' | 'requestIds'>(
       this,
-      { httpGateway: false, userStore: false, requestIds: false },
+      { httpGateway: false, userId: false, requestIds: false },
       { autoBind: true },
     );
   }
@@ -85,7 +84,7 @@ export default class BooksRepository {
   }
 
   private path(scope: BooksScope): string {
-    const base = `/v1/books/${encodeURIComponent(this.userStore.userId)}`;
+    const base = `/v1/books/${encodeURIComponent(this.userId)}`;
     return scope === 'private' ? `${base}/private` : base;
   }
 }

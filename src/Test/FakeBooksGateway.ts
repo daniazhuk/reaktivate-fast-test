@@ -5,7 +5,7 @@ type Request = { method: string; path: string; payload?: unknown };
 
 const BOOKS_PATH = /^\/v1\/books\/([^/]+)(\/private)?$/;
 
-export const SHARED_BOOKS: BookDto[] = [
+const SHARED_BOOKS: BookDto[] = [
   { id: 111, name: 'Wind in the willows', ownerId: 'postnikov', author: 'Kenneth Graeme' },
   { id: 121, name: 'I, Robot', ownerId: 'postnikov', author: 'Isaac Asimov' },
 ];

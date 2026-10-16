@@ -20,7 +20,7 @@ describe('App', () => {
     );
 
     expect(await screen.findByText('Kenneth Graeme: Wind in the willows')).toBeInTheDocument();
-    expect(screen.getByTestId('private-books-counter')).toHaveTextContent('Your books: 1');
+    expect(screen.getByText('Your books: 1')).toBeInTheDocument();
 
     await user.click(screen.getByRole('tab', { name: 'Private books' }));
     expect(screen.getByRole('tab', { name: 'Private books' })).toHaveAttribute('aria-selected', 'true');
@@ -33,7 +33,7 @@ describe('App', () => {
     await user.click(within(form).getByRole('button', { name: 'Add' }));
 
     expect(await screen.findByText('Frank Herbert: Dune')).toBeInTheDocument();
-    expect(screen.getByTestId('private-books-counter')).toHaveTextContent('Your books: 2');
+    expect(screen.getByText('Your books: 2')).toBeInTheDocument();
     expect(within(form).getByLabelText('Name')).toHaveValue('');
   });
 });

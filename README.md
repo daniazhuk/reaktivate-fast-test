@@ -68,7 +68,7 @@ To clear the books created under a nickname:
 | Controller | `*.controller.ts`                   | Local per-component state, VM getters, UI actions, lifecycle                       |
 | Repository | `Books/Books.repository.ts`         | Shared books state (PM) per scope, DTO validation and mapping, API paths           |
 | Gateway    | `Shared/ApiGateway.ts`              | `fetch` behind the `HttpGateway` interface; an in-memory fake replaces it in tests |
-| Stores     | `Shared/Stores/*`                   | App-wide `UserStore`, composition root `createAppStores`, React context            |
+| Stores     | `Shared/Stores/*`                   | Composition root `createAppStores` and the React context that provides it          |
 
 ```
 src/
@@ -86,7 +86,7 @@ src/
     ApiGateway.ts, config.ts
     Components/                Tabs, TextField (props-only views)
     Lifecycle/                 useController, Controller, DisposerBag
-    Stores/                    UserStore, createAppStores, Stores.context
+    Stores/                    createAppStores (composition root), Stores.context
   Test/                        FakeBooksGateway (in-memory API), test helpers
 ```
 
@@ -102,7 +102,7 @@ src/
 | Part 2b. Sticky app-wide header "Your books: N"   | `Header/*`, `position: sticky` in `styles.css`; count from the shared `BooksRepository`     | `Header.controller.test.ts`, including "keeps the counter correct while the list shows all / private"          |
 | Appendix 1. Reusable vs feature components        | `Shared/Components` vs `Books/*`, `Header/*`                                                | structure                                                                                                      |
 | Appendix 2. A controller per component with logic | `BooksList`, `AddBook`, `Header` controllers; `Tabs`, `TextField`, `BookItem` have no logic | ESLint view rules                                                                                              |
-| Appendix 3. Global store only for shared data     | `UserStore` (user), `BooksRepository` (books shared by the list and the header)             | `Books.repository.test.ts`                                                                                     |
+| Appendix 3. Global store only for shared data     | only `BooksRepository` (books shared by the list and the header); the nickname is config    | `Books.repository.test.ts`                                                                                     |
 | Appendix 4. View uses only MobX stores            | views call `useController` only; `useState` / `useEffect` are banned in views               | ESLint `no-restricted-imports`                                                                                 |
 | Appendix 5. Logic tests are a must                | see above                                                                                   | `npm run check` in CI                                                                                          |
 | Appendix 6. Views are functional                  | all views are function components                                                           | —                                                                                                              |
@@ -146,12 +146,12 @@ submits…"), creation errors keep the input ("shows an error and keeps the inpu
 
 ## What changed compared to the starter
 
-| Starter                                                       | Now                                                                                           |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `index.js`: `App` with `useState`/`useEffect`, `alert("TBD")` | `index.tsx` only renders; logic moved to controllers; "Add" creates a book through a form     |
-| `Books.repository.js`: module singleton, returns raw DTO      | `Books.repository.ts`: MobX store of PM per scope, zod validation, DTO → PM mapping, DI       |
-| `addBook` posted to `.../postnikov/books` (no such endpoint)  | posts to `/v1/books/[user]` and checks `{ status: "ok" }`, then refreshes both scopes         |
-| `ApiGateway.js`: no error handling, URL contains the user     | `ApiGateway.ts`: `HttpGateway` interface, `HttpError` on non-2xx, user comes from `UserStore` |
-| `react-scripts@3` (CRA 3, deprecated), React 16.8, JS         | Vite 8 + TypeScript 6 + Vitest 5, React 19                                                    |
-| MobX 6 / mobx-react 7 (installed, unused)                     | MobX 7 / mobx-react 10                                                                        |
-| no linting, no CI                                             | ESLint 10 + typescript-eslint + react-hooks, Prettier, GitHub Actions                         |
+| Starter                                                       | Now                                                                                                            |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `index.js`: `App` with `useState`/`useEffect`, `alert("TBD")` | `index.tsx` only renders; logic moved to controllers; "Add" creates a book through a form                      |
+| `Books.repository.js`: module singleton, returns raw DTO      | `Books.repository.ts`: MobX store of PM per scope, zod validation, DTO → PM mapping, DI                        |
+| `addBook` posted to `.../postnikov/books` (no such endpoint)  | posts to `/v1/books/[user]` and checks `{ status: "ok" }`, then refreshes both scopes                          |
+| `ApiGateway.js`: no error handling, URL contains the user     | `ApiGateway.ts`: `HttpGateway` interface, `HttpError` on non-2xx, the user is injected by the composition root |
+| `react-scripts@3` (CRA 3, deprecated), React 16.8, JS         | Vite 8 + TypeScript 6 + Vitest 5, React 19                                                                     |
+| MobX 6 / mobx-react 7 (installed, unused)                     | MobX 7 / mobx-react 10                                                                                         |
+| no linting, no CI                                             | ESLint 10 + typescript-eslint + react-hooks, Prettier, GitHub Actions                                          |

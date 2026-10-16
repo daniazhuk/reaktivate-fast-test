@@ -133,9 +133,8 @@ describe('BooksRepository', () => {
     await expect(booksRepository.addBook({ name: 'X', author: 'Y' })).rejects.toThrow();
   });
 
-  it('uses the current user from UserStore', async () => {
-    const { booksRepository, userStore, gateway } = createTestStores();
-    userStore.setUserId('another user');
+  it('encodes the user nickname in the path', async () => {
+    const { booksRepository, gateway } = createTestStores(undefined, 'another user');
 
     await booksRepository.getBooks('all');
 

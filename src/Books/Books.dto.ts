@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // The swagger types every response as a bare `object`, so DTOs are validated at the repository boundary.
 
-export const BookDtoSchema = z.object({
+const BookDtoSchema = z.object({
   // Books created through the API come back without `id` and `ownerId`.
   id: z.number().optional(),
   name: z.string(),
