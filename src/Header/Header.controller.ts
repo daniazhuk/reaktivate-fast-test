@@ -7,6 +7,7 @@ export default class HeaderController implements Controller {
   static create = ({ booksRepository }: AppStores) => new HeaderController(booksRepository);
 
   readonly title = 'Books';
+  readonly retryLabel = 'Retry';
 
   private readonly booksRepository: BooksRepository;
 
@@ -16,12 +17,30 @@ export default class HeaderController implements Controller {
   }
 
   get counterLabel(): string {
-    const { isLoaded } = this.booksRepository.getScope('private');
-    const count = isLoaded ? String(this.booksRepository.privateBooksCount) : '…';
-    return `Your books: ${count}`;
+    return `Your books: ${this.counterValue}`;
+  }
+
+  /** Retry is offered only when there is no count to show at all. */
+  get isRetryHidden(): boolean {
+    const { hasError, isLoaded } = this.booksRepository.getScope('private');
+    return !hasError || isLoaded;
+  }
+
+  retry(): void {
+    this.load();
   }
 
   mount(): void {
+    this.load();
+  }
+
+  private get counterValue(): string {
+    const { isLoaded, hasError } = this.booksRepository.getScope('private');
+    if (isLoaded) return String(this.booksRepository.privateBooksCount);
+    return hasError ? '—' : '…';
+  }
+
+  private load(): void {
     void this.booksRepository.getBooks('private');
   }
 }

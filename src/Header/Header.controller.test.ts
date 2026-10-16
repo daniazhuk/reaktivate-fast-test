@@ -13,6 +13,36 @@ describe('HeaderController', () => {
     const { controller } = setup();
 
     expect(controller.counterLabel).toBe('Your books: …');
+    expect(controller.isRetryHidden).toBe(true);
+  });
+
+  it('shows a dash and offers retry when the count cannot be loaded', async () => {
+    const { controller, gateway } = setup();
+    gateway.failNext();
+
+    controller.mount();
+    await flushPromises();
+
+    expect(controller.counterLabel).toBe('Your books: —');
+    expect(controller.isRetryHidden).toBe(false);
+
+    controller.retry();
+    await flushPromises();
+
+    expect(controller.counterLabel).toBe('Your books: 0');
+    expect(controller.isRetryHidden).toBe(true);
+  });
+
+  it('keeps the last known count when a refresh fails', async () => {
+    const { controller, booksRepository, gateway } = setup();
+    controller.mount();
+    await flushPromises();
+    gateway.failNext();
+
+    await booksRepository.getBooks('private');
+
+    expect(controller.counterLabel).toBe('Your books: 0');
+    expect(controller.isRetryHidden).toBe(true);
   });
 
   it('loads private books on mount and shows their count', async () => {
