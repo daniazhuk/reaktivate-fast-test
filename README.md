@@ -13,7 +13,7 @@ The git history starts with the untouched starter, so each refactoring step can 
 
 ## How to run
 
-Requirements: Node.js 24 (`nvm use` reads `.nvmrc`).
+Requirements: Node.js 22.22+ or 24.15+, the minimum for Vitest and jsdom. Node 24 is recommended: `nvm use` reads `.nvmrc`.
 
 ```bash
 npm ci
