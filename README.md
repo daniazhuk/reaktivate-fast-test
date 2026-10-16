@@ -20,16 +20,17 @@ npm ci
 npm run dev            # http://localhost:5173
 ```
 
-| Command                            | What it does                                                         |
-| ---------------------------------- | -------------------------------------------------------------------- |
-| `npm test`                         | all tests once (~1 s)                                                |
-| `npm run test:watch`               | tests in watch mode                                                  |
-| `npm run test:coverage`            | tests + coverage report (`coverage/index.html`) and thresholds       |
-| `npm run typecheck`                | TypeScript                                                           |
-| `npm run lint`                     | ESLint, including the "no logic in views" rules                      |
-| `npm run format`                   | Prettier                                                             |
-| `npm run check`                    | typecheck + lint + format check + tests with coverage (CI runs this) |
-| `npm run build && npm run preview` | production build served locally                                      |
+| Command                            | What it does                                                                |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| `npm test`                         | all tests once (~1 s)                                                       |
+| `npm run test:watch`               | tests in watch mode                                                         |
+| `npm run test:coverage`            | tests + coverage report (`coverage/index.html`) and thresholds              |
+| `npm run typecheck`                | TypeScript                                                                  |
+| `npm run lint`                     | ESLint, including the "no logic in views" rules                             |
+| `npm run knip`                     | unused files, exports and dependencies                                      |
+| `npm run format`                   | Prettier                                                                    |
+| `npm run check`                    | typecheck + lint + knip + format check + tests with coverage (CI runs this) |
+| `npm run build && npm run preview` | production build served locally                                             |
 
 WebStorm picks up the shared run configurations `dev`, `test` and `check` from `.run/`.
 
@@ -130,6 +131,8 @@ submits…"), creation errors keep the input ("shows an error and keeps the inpu
   the API only appends.
 - **Validation at the boundary.** The swagger types every response as `object`, so `zod` parses responses in the
   repository. Malformed data becomes an error state instead of crashing a view.
+- **Conventions are enforced by tooling, not by review.** ESLint forbids logic and local state in views, default exports and
+  `console.log`. knip fails on unused files, exports and dependencies. Both run in `npm run check` and in CI.
 - **Async handlers.** `AddBookController.onSubmit` is a synchronous form handler that starts the async `submit()`.
   Progress and errors are observable state, never a promise returned to React (`no-misused-promises`).
 - **Tooling.** The starter's CRA 3 is deprecated and does not run on current Node.js, so the project moved to Vite + TypeScript + Vitest.

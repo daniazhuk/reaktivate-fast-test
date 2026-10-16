@@ -31,6 +31,16 @@ export default defineConfig([
     },
   },
   {
+    // One export style across the codebase: named exports only.
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        { selector: 'ExportDefaultDeclaration', message: 'Use named exports.' },
+      ],
+    },
+  },
+  {
     // Acceptance criterion #1: zero logic and calculations in TSX views.
     files: ['src/**/*.tsx'],
     ignores: ['src/**/*.test.tsx'],
@@ -44,6 +54,8 @@ export default defineConfig([
         { selector: 'BinaryExpression', message: MOVE_TO_CONTROLLER },
         { selector: 'UnaryExpression', message: MOVE_TO_CONTROLLER },
         { selector: 'TemplateLiteral', message: MOVE_TO_CONTROLLER },
+        // Repeated here because this block overrides no-restricted-syntax for views.
+        { selector: 'ExportDefaultDeclaration', message: 'Use named exports.' },
       ],
       'no-restricted-imports': [
         'error',
