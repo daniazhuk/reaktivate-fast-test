@@ -1,4 +1,5 @@
 import { createTestStores, flushPromises, TEST_USER } from '@/Test/createTestStores';
+import BooksListController from '@/Books/BooksList/BooksList.controller';
 import HeaderController from './Header.controller';
 
 const setup = () => {
@@ -38,4 +39,25 @@ describe('HeaderController', () => {
 
     expect(controller.counterLabel).toBe('Your books: 1');
   });
+
+  it.each(['all', 'private'] as const)(
+    'keeps the counter correct while the list shows "%s"',
+    async (scope) => {
+      const stores = createTestStores();
+      stores.gateway.seedPrivate(TEST_USER, [{ name: 'Mine', author: 'Me' }]);
+      const header = HeaderController.create(stores);
+      const list = BooksListController.create(stores);
+      list.selectScope(scope);
+      header.mount();
+      list.mount();
+      await flushPromises();
+      expect(header.counterLabel).toBe('Your books: 1');
+
+      await stores.booksRepository.addBook({ name: 'Dune', author: 'Frank Herbert' });
+
+      expect(header.counterLabel).toBe('Your books: 2');
+      expect(list.books).toHaveLength(scope === 'all' ? 4 : 2);
+      list.unmount();
+    },
+  );
 });
