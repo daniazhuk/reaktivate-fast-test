@@ -1,13 +1,3 @@
-/** Shape returned by the API. Books created by the user come back without `id`/`ownerId`. */
-export type BookDto = {
-  id?: number;
-  name: string;
-  author: string;
-  ownerId?: string;
-};
-
-export type AddBookDto = Pick<BookDto, 'name' | 'author'>;
-
 /** Programmer's model: what controllers work with. */
 export type BookPm = {
   id: string;

@@ -1,4 +1,4 @@
-import type { BookDto } from '@/Books/Books.types';
+import type { BookDto } from '@/Books/Books.dto';
 import { HttpError, type HttpGateway } from '@/Shared/ApiGateway';
 
 type Request = { method: string; path: string; payload?: unknown };
@@ -19,6 +19,7 @@ export class FakeBooksGateway implements HttpGateway {
   readonly requests: Request[] = [];
   private readonly ownBooks = new Map<string, BookDto[]>();
   private failures = 0;
+  private nextBody: { body: unknown } | null = null;
   private paused: Promise<void> | null = null;
   private release: (() => void) | null = null;
 
@@ -29,6 +30,11 @@ export class FakeBooksGateway implements HttpGateway {
   /** Makes the next `count` requests fail with HTTP 500. */
   failNext(count = 1): void {
     this.failures = count;
+  }
+
+  /** Replaces the body of the next response, e.g. with a malformed payload. */
+  respondNextWith(body: unknown): void {
+    this.nextBody = { body };
   }
 
   /** Holds every response until `resume()` is called. */
@@ -63,6 +69,12 @@ export class FakeBooksGateway implements HttpGateway {
     if (this.failures > 0) {
       this.failures -= 1;
       throw new HttpError(500, `${request.method} ${request.path} failed`);
+    }
+
+    if (this.nextBody) {
+      const { body } = this.nextBody;
+      this.nextBody = null;
+      return body as T;
     }
 
     const match = request.path.match(BOOKS_PATH);

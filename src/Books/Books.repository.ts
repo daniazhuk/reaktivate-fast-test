@@ -1,7 +1,8 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import type { HttpGateway } from '@/Shared/ApiGateway';
 import type UserStore from '@/Shared/Stores/User.store';
-import type { AddBookDto, AddBookPm, BookDto, BookPm, BooksScope, BooksScopePm } from './Books.types';
+import { AddBookResponseDtoSchema, BooksDtoSchema, type AddBookDto, type BookDto } from './Books.dto';
+import type { AddBookPm, BookPm, BooksScope, BooksScopePm } from './Books.types';
 
 const createScopePm = (): BooksScopePm => ({
   books: [],
@@ -58,7 +59,7 @@ export default class BooksRepository {
     scopePm.hasError = false;
 
     try {
-      const booksDto = await this.httpGateway.get<BookDto[]>(this.path(scope));
+      const booksDto = BooksDtoSchema.parse(await this.httpGateway.get<unknown>(this.path(scope)));
       if (requestId !== this.requestIds[scope]) return;
       // One batch: observers see a single "loading" -> "loaded" transition.
       runInAction(() => {
@@ -76,10 +77,10 @@ export default class BooksRepository {
     }
   }
 
-  /** Creates a book and refreshes both scopes. Throws if creation fails. */
+  /** Creates a book and refreshes both scopes. Throws if the API does not confirm creation. */
   async addBook({ name, author }: AddBookPm): Promise<void> {
     const bookAddDto: AddBookDto = { name, author };
-    await this.httpGateway.post(this.path('all'), bookAddDto);
+    AddBookResponseDtoSchema.parse(await this.httpGateway.post<unknown>(this.path('all'), bookAddDto));
     await Promise.all([this.getBooks('all'), this.getBooks('private')]);
   }
 

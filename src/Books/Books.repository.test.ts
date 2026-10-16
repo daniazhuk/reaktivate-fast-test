@@ -68,6 +68,28 @@ describe('BooksRepository', () => {
     expect(scopePm.books).toHaveLength(2);
   });
 
+  it.each([
+    ['not an array', { books: [] }],
+    ['a book without a name', [{ id: 1, author: 'A' }]],
+    ['a book with a non-numeric id', [{ id: '1', name: 'N', author: 'A' }]],
+  ])('treats a malformed response (%s) as an error', async (_case, body) => {
+    const { booksRepository, gateway } = createTestStores();
+    gateway.respondNextWith(body);
+
+    await booksRepository.getBooks('all');
+
+    expect(booksRepository.getScope('all')).toMatchObject({ hasError: true, isLoaded: false, books: [] });
+  });
+
+  it('drops unknown fields from the API', async () => {
+    const { booksRepository, gateway } = createTestStores();
+    gateway.respondNextWith([{ id: 1, name: 'N', author: 'A', extra: true }]);
+
+    await booksRepository.getBooks('all');
+
+    expect(booksRepository.getScope('all').books).toEqual([{ id: '1', name: 'N', author: 'A' }]);
+  });
+
   it('applies only the latest response when requests overlap', async () => {
     const { booksRepository, gateway } = createTestStores();
     gateway.pause();
@@ -100,6 +122,13 @@ describe('BooksRepository', () => {
   it('rethrows when adding a book fails', async () => {
     const { booksRepository, gateway } = createTestStores();
     gateway.failNext();
+
+    await expect(booksRepository.addBook({ name: 'X', author: 'Y' })).rejects.toThrow();
+  });
+
+  it('rejects when the API does not confirm the creation', async () => {
+    const { booksRepository, gateway } = createTestStores();
+    gateway.respondNextWith({ status: 'error' });
 
     await expect(booksRepository.addBook({ name: 'X', author: 'Y' })).rejects.toThrow();
   });
