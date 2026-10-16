@@ -1,11 +1,10 @@
-.App {
-  font-family: arial;
-  text-align: center;
+body {
+  margin: 0;
+  font-family: arial, sans-serif;
 }
 
-body {
-  font-family: arial;
-  margin: 0;
+.books-page {
+  text-align: center;
 }
 
 .app-header {
