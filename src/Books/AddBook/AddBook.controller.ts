@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import type BooksRepository from '@/Books/Books.repository';
 import type { AppStores } from '@/Shared/Stores/createAppStores';
-import type { SubmitEvent, ValueChangeEvent } from '@/Shared/types';
+import type { ChangeEventLike, SubmitEventLike } from '@/Shared/types';
 
 /** Has no subscriptions or resources to release, hence no mount/unmount. */
 export default class AddBookController {
@@ -36,18 +36,18 @@ export default class AddBookController {
     return !this.hasError;
   }
 
-  onNameChange(event: ValueChangeEvent): void {
+  onNameChange(event: ChangeEventLike): void {
     this.name = event.target.value;
     this.hasError = false;
   }
 
-  onAuthorChange(event: ValueChangeEvent): void {
+  onAuthorChange(event: ChangeEventLike): void {
     this.author = event.target.value;
     this.hasError = false;
   }
 
   /** Form handler: submit progress and errors are exposed via `isSubmitting` / `hasError`. */
-  onSubmit(event: SubmitEvent): void {
+  onSubmit(event: SubmitEventLike): void {
     event.preventDefault();
     void this.submit();
   }
